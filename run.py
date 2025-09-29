@@ -7,6 +7,8 @@ steps = [
     ("Training disease model", [sys.executable, "train_disease_model.py"]),
     ("Training outbreak probability model", [sys.executable, "train_outbreak_probability_model.py"]),
     ("Generating sample report", [sys.executable, "generate_report.py"]),
+    ("Sending alerts if needed", [sys.executable, "alert.py"])
+
 ]
 
 for desc, cmd in steps:
