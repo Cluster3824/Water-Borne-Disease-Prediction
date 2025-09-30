@@ -29,6 +29,13 @@ PHONE_NUMBER = os.getenv('PHONE_NUMBER', '+911234567890')
 GOV_CONTACT = os.getenv('GOV_CONTACT', 'gov-alert@example.com')
 
 def send_alert(report):
+    print("[DEBUG] send_alert called with report:", report)
+    print("[DEBUG] EMAIL_ALERT:", EMAIL_ALERT)
+    print("[DEBUG] EMAIL_TO_LIST:", EMAIL_TO_LIST)
+    print("[DEBUG] EMAIL_FROM:", EMAIL_FROM)
+    print("[DEBUG] EMAIL_PASSWORD (set):", bool(EMAIL_PASSWORD))
+    print("[DEBUG] SMTP_SERVER:", SMTP_SERVER)
+    print("[DEBUG] SMTP_PORT:", SMTP_PORT)
     """Send alert if water is unsafe. Accepts a report dict."""
     alert_message = f"""
 ALERT: WATER SAFETY ISSUE DETECTED
@@ -44,6 +51,7 @@ Top Contributing Features: {report.get('Top Contributing Features', 'N/A')}
         print("\n[ALERT] Water is UNSAFE! Sending notifications...")
         # Email Alert
         if EMAIL_ALERT and EMAIL_TO_LIST and EMAIL_FROM and EMAIL_PASSWORD and SMTP_SERVER:
+            print("[DEBUG] All email config present. Attempting to send email...")
             try:
                 msg = MIMEMultipart()
                 msg['From'] = EMAIL_FROM
