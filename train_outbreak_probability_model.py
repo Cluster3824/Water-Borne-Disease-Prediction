@@ -1,12 +1,16 @@
 import pandas as pd
 import joblib
-from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
 import json
 
 # Load preprocessed data
 df = pd.read_csv('preprocessed_data.csv')
 
-y = df['outbreak_probability'].fillna(0).astype(float) / 100.0
+# Ensure outbreak_probability is in [0, 100]
+df['outbreak_probability'] = df['outbreak_probability'].fillna(0)
+df['outbreak_probability'] = df['outbreak_probability'].clip(lower=0, upper=100)
+
+y = df['outbreak_probability'].astype(float) / 100.0
 # Use the same features as water safety model for consistency
 with open('models/water_safety_features.json') as f:
 	prob_features = json.load(f)
@@ -18,11 +22,11 @@ if num_cols:
 	X_scaled[num_cols] = feature_scaler.transform(X[num_cols])
 y = df['outbreak_probability'].fillna(0).astype(float) / 100.0
 
-# Train probability model (regression)
-prob_model = LinearRegression()
+# Train probability model (RandomForestRegressor)
+prob_model = RandomForestRegressor(random_state=42)
 prob_model.fit(X_scaled, y)
 joblib.dump(prob_model, 'models/outbreak_probability_model.pkl')
 # Save features used for probability model
 with open('models/probability_model_features.json', 'w') as f:
 	json.dump(list(X_scaled.columns), f)
-print('Outbreak probability model trained and saved.')
+print('Outbreak probability model (RandomForestRegressor) trained and saved.')
